@@ -15,21 +15,37 @@ import java.util.Map;
 
 import javax.net.ssl.HttpsURLConnection;
 
+/**
+ * Connects to MCPS Portal
+ */
 public class Portal {
 	
-	static String mcps = "https://portal.mcpsmd.org/public/";
+	static String mcps = "https://portal.mcpsmd.org/public/home.html";
 	static String test = "https://postman-echo.com/post";
 	
-	public static Map getKeys() throws IOException{
+	public Map getKeys() throws IOException{
 		
 		Map<String, String> keys = new HashMap<String, String>();
 		
+		// Temp vals
+		keys.put("pskey", "placeholder_pskey");
+		keys.put("pstoken", "placeholder_pstoken");
+		
+		// Temp new conn
 		URL u = new URL(mcps);
 		HttpsURLConnection conn = (HttpsURLConnection) u.openConnection();
 		
+		// Cookies
+		String cookies = "";
+		for(String c : conn.getHeaderFields().get("Set-Cookie")){
+			cookies += c.split(";")[0] + ";";
+		}
+		
+		keys.put("cookies", cookies.substring(0, cookies.length() - 1));
+		
+		// Keys
 		BufferedReader reader=new BufferedReader(new InputStreamReader(conn.getInputStream()));
         String response;
-        
         while ((response=reader.readLine())!=null) {
         	if(response.contains("contextData")){
         		int index = response.indexOf("value=");
@@ -45,7 +61,7 @@ public class Portal {
         return keys;
 	}
 	
-	public static void login() throws IOException{
+	public void login() throws IOException{
 		URL u = new URL(mcps);
 		HttpsURLConnection conn = (HttpsURLConnection) u.openConnection();
 		
@@ -64,17 +80,17 @@ public class Portal {
 							"contextData="+contextData+"&"+
 							"dbpw="+dbpw+"&"+
 							"translator_username="+"&"+
-							"translator_password"+"&"+
-							"translator_ldappassword"+"&"+
+							"translator_password="+"&"+
+							"translator_ldappassword="+"&"+
 							"returnUrl="+"&"+
 							"serviceName=PS Parent Portal"+"&"+
 							"serviceTicket="+"&"+
 							"pcasServerUrl=/"+"&"+
 							"credentialType=User Id and Password Credential"+"&"+
-							"ldappassword"+pass+"&"+
+							"ldappassword="+pass+"&"+
 							"account="+user+"&"+
-							"pw"+pw+"&"+
-							"translatorpw";
+							"pw="+pw+"&"+
+							"translatorpw=";
 		String encodedData = URLEncoder.encode( rawData, "UTF-8" );
 		
 		conn.setRequestMethod("POST");
@@ -83,6 +99,11 @@ public class Portal {
 		conn.setRequestProperty("Accept-Language", "en-US,en;q=0.8");
 		conn.setRequestProperty("Content-Length", String.valueOf(encodedData.length()));
 		conn.setRequestProperty( "charset", "utf-8");
+		
+		// Cookies
+		conn.setRequestProperty("Cookie", keys.get("cookies"));
+		
+		System.out.println(conn.getRequestProperties());
 		
 		// Post
 		conn.setDoOutput(true);
@@ -94,6 +115,7 @@ public class Portal {
 		// Debug
 		System.out.println(conn.getResponseCode());
 		System.out.println(rawData);
+		System.out.println();
 		
 		 //read the request
         BufferedReader reader=new BufferedReader(new InputStreamReader(conn.getInputStream()));
@@ -104,6 +126,7 @@ public class Portal {
 	}
 	
 	public static void main(String[] args) throws IOException, NoSuchAlgorithmException{
-		login();
+		Portal p = new Portal();
+		p.login();
 	}
 }

@@ -10,6 +10,9 @@ import java.util.Formatter;
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 
+/**
+ * Encryption and hash functions
+ */
 public class CryptoHelper {
 	
 	// Base64-MD5
