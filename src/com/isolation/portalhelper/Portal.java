@@ -2,20 +2,31 @@ package com.isolation.portalhelper;
 
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.jsoup.Connection;
 import org.jsoup.Connection.Response;
 import org.jsoup.Jsoup;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+
 /**
  * Connects to MCPS Portal
+ * Represents a student
  */
 public class Portal {
 	
-	static String mcps = "https://portal.mcpsmd.org/";
-	Map<String, String> allCookies = new HashMap<String, String>();
+	private static String mcps = "https://portal.mcpsmd.org/";
+	private Map<String, String> allCookies = new HashMap<String, String>();
+	
+	private String schoolId;
+	private List<SchoolClass> classes = new ArrayList<SchoolClass>();
 	
 	/**
 	 * Gets pskey and pstoken from html
@@ -49,7 +60,7 @@ public class Portal {
 	 * 
 	 * @throws IOException
 	 */
-	public void login() throws IOException{
+	public void login(String user, String pass) throws IOException{
 	
 		Connection.Response loginForm = Jsoup.connect(mcps)
 	            .method(Connection.Method.GET)
@@ -58,8 +69,6 @@ public class Portal {
 		// Parameters
 		Map<String, String> keys = getKeys(loginForm.body());
 		
-		String user = Credentials.user;
-		String pass = Credentials.pass;
 		String pstoken = keys.get("pstoken");
 		String contextData = keys.get("pskey");
 		String dbpw = CryptoHelper.calcDBPW(contextData, pass);
@@ -92,7 +101,9 @@ public class Portal {
 		allCookies.putAll(loginToHome.cookies());
 		allCookies.put("uiStateCont", "null");
 		allCookies.put("uiStateNav", "null");
-		System.out.println(allCookies);
+		
+		// School id
+		schoolId = allCookies.get("currentSchool");
 	}
 	
 	/**
@@ -113,11 +124,84 @@ public class Portal {
 		System.out.println(nav.body());
 	}
 	
+	/**
+	 * Gets all grades
+	 * 
+	 * @throws IOException
+	 */
+	public void getGrades() throws IOException{
+		Response nav = Jsoup.connect(mcps + "guardian/prefs/gradeByCourseSecondary.json?schoolid=" + schoolId)
+				.data("cookieexists", "false")
+				.cookies(allCookies)
+				.method(Connection.Method.GET)
+				.execute();
+		
+		// Run through classes
+		Gson gson = new Gson();
+		JsonArray json = gson.fromJson(nav.body(), JsonArray.class);
+		
+		for(JsonElement e : json){
+			
+			JsonObject schoolClass = e.getAsJsonObject();
+			
+			if(!"{}".equals(e.toString())){
+				classes.add(new SchoolClass(
+						schoolClass.get("courseName").getAsString(),
+						schoolClass.get("teacher").getAsString(),
+						schoolClass.get("sectionid").getAsString()
+					));
+			}
+		}
+		
+		// Add assignments for each school class
+		for(SchoolClass c : classes){
+			addAssignments(c);
+		}
+	}
+	
+	/**
+	 * Add assignments for a school class
+	 * 
+	 * @param c
+	 * @throws IOException
+	 */
+	public void addAssignments(SchoolClass c) throws IOException{
+		Response nav = Jsoup.connect(mcps + "guardian/prefs/assignmentGrade_AssignmentDetail.json?schoolid=" + schoolId + "&secid=" + c.getSecID())
+				.data("cookieexists", "false")
+				.cookies(allCookies)
+				.method(Connection.Method.GET)
+				.execute();
+		
+		// Run through assignments
+		Gson gson = new Gson();
+		JsonArray json = gson.fromJson(nav.body(), JsonArray.class);
+				
+		for(JsonElement e : json){
+					
+			JsonObject assign = e.getAsJsonObject();
+					
+			if(!"{}".equals(e.toString())){
+				//Detect excused
+				if("X".equals(assign.get("Points").getAsString())){
+					continue;
+				}
+				
+				c.assigns.add(new Assignment(
+						assign.get("Description").toString(),
+						assign.get("Points").getAsFloat(),
+						assign.get("Possible").getAsFloat()
+					));
+			}
+		}
+	}
+	
 	public static void main(String[] args) throws IOException, NoSuchAlgorithmException{
 		Portal p = new Portal();
-		p.login();
-		p.nav("guardian/home.html#termGrades");
-		// Powerschool why is it so hard to get grades??? :((((
-		// https://portal.mcpsmd.org/guardian/prefs/termsData.json?schoolid=757
+		p.login(Credentials.user, Credentials.pass);
+		p.getGrades();
+		
+		for(SchoolClass c : p.classes){
+			System.out.println(c);
+		}
 	}
 }

@@ -7,25 +7,29 @@ package com.isolation.portalhelper;
 
 public class Assignment {
 	private String title;
-	private float myScore;
-	private float totalScore;
+	private float points;
+	private float possible;
 	private float percent;
 	
 	public Assignment(String t, float frac, float tot){
 		title = t;
-		myScore = frac;
-		totalScore = tot;
+		points = frac;
+		possible = tot;
 		percent = frac / tot;
 	}
 
+	public String toString(){
+		return title + ":" + percent;
+	}
+	
 	public String getTitle() {
 		return title;
 	}
-	public float getMyScore() {
-		return myScore;
+	public float getPoints() {
+		return points;
 	}
-	public float getTotalScore() {
-		return totalScore;
+	public float getPossible() {
+		return possible;
 	}
 	public float getPercent() {
 		return percent;

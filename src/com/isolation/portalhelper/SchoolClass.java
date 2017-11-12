@@ -12,28 +12,34 @@ public class SchoolClass {
 	
 	private String title;
 	private String teacher;
+	private String secid;
 	
 	public List<Assignment> assigns = new ArrayList<Assignment>();
 	
-	private float totalMyPoints;
 	private float totalPoints;
+	private float totalPossible;
 	private float totalPercent;
 	
-	public SchoolClass(String t, String teach){
+	public SchoolClass(String t, String teach, String id){
 		title = t;
 		teacher = teach;
+		secid = id;
 	}
 
 	public void calcTotalGrade(){
-		totalMyPoints = 0;
 		totalPoints = 0;
+		totalPossible = 0;
 		totalPercent = 0;
 		
 		for(Assignment a : assigns){
-			totalMyPoints += a.getMyScore();
-			totalPoints += a.getTotalScore();
+			totalPoints += a.getPoints();
+			totalPossible += a.getPossible();
 		}
-		totalPercent = totalMyPoints / totalPoints;
+		totalPercent = totalPoints / totalPossible;
+	}
+	
+	public String toString(){
+		return title + ":" + teacher + ":" + getTotalPercent();
 	}
 	
 	public String getTitle() {
@@ -44,17 +50,20 @@ public class SchoolClass {
 		return teacher;
 	}
 
-	public float getTotalMyPoints() {
-		calcTotalGrade();
-		return totalMyPoints;
-	}
 	public float getTotalPoints() {
 		calcTotalGrade();
 		return totalPoints;
 	}
+	public float getTotalPossible() {
+		calcTotalGrade();
+		return totalPossible;
+	}
 	public float getTotalPercent() {
 		calcTotalGrade();
 		return totalPercent;
+	}
+	public String getSecID(){
+		return secid;
 	}
 	
 	
