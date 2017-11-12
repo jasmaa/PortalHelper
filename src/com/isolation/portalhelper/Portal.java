@@ -54,10 +54,8 @@ public class Portal {
 	            .method(Connection.Method.GET)
 	            .execute();
 		
-		Response res = loginForm;
-		
 		// Parameters
-		Map<String, String> keys = getKeys(res.body());
+		Map<String, String> keys = getKeys(loginForm.body());
 		
 		String user = Credentials.user;
 		String pass = Credentials.pass;
@@ -66,7 +64,7 @@ public class Portal {
 		String dbpw = CryptoHelper.calcDBPW(contextData, pass);
 		String pw = CryptoHelper.calcPW(contextData, pass);
 		
-		Document document = Jsoup.connect(mcps + "guardian/home.html#/termGrades/assignment?schoolId=757&studentNumber=327059&termId=MP1&sectionId=29850001")
+		Connection.Response loginToHome = Jsoup.connect(mcps + "guardian/home.html")
 				.data("cookieexists", "false")
 				.data(	"pstoken", pstoken,
 						"contextData", contextData,
@@ -85,9 +83,10 @@ public class Portal {
 						"translatorpw", ""
 				)
 				.cookies(loginForm.cookies())
-	            .post();
+				.method(Connection.Method.POST)
+	            .execute();
 		
-		System.out.println(document.body());
+		System.out.println(loginToHome.body());
 	}
 	
 	public static void main(String[] args) throws IOException, NoSuchAlgorithmException{
