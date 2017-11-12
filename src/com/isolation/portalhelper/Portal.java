@@ -15,114 +15,79 @@ import java.util.Map;
 
 import javax.net.ssl.HttpsURLConnection;
 
+import org.jsoup.Connection;
+import org.jsoup.Connection.Response;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+
 /**
  * Connects to MCPS Portal
  */
 public class Portal {
 	
-	static String mcps = "https://portal.mcpsmd.org/public/home.html";
+	static String mcps = "https://portal.mcpsmd.org/";
 	static String test = "https://postman-echo.com/post";
 	
-	public Map getKeys() throws IOException{
+	public Map getKeys(String body) throws IOException{
 		
 		Map<String, String> keys = new HashMap<String, String>();
 		
-		// Temp vals
-		keys.put("pskey", "placeholder_pskey");
-		keys.put("pstoken", "placeholder_pstoken");
-		
-		// Temp new conn
-		URL u = new URL(mcps);
-		HttpsURLConnection conn = (HttpsURLConnection) u.openConnection();
-		
-		// Cookies
-		String cookies = "";
-		for(String c : conn.getHeaderFields().get("Set-Cookie")){
-			cookies += c.split(";")[0] + ";";
-		}
-		
-		keys.put("cookies", cookies.substring(0, cookies.length() - 1));
-		
 		// Keys
-		BufferedReader reader=new BufferedReader(new InputStreamReader(conn.getInputStream()));
-        String response;
-        while ((response=reader.readLine())!=null) {
-        	if(response.contains("contextData")){
-        		int index = response.indexOf("value=");
-        		String key = response.substring(index+7, index+71);
-        		keys.put("pskey", key);
-        	}
-        	else if(response.contains("pstoken")){
-        		int index = response.indexOf("value=");
-        		String key = response.substring(index+7, index+49);
-        		keys.put("pstoken", key);
-        	}
+        if(body.contains("contextData")){
+        	String strToFind = "id=\"contextData\" value=\"";
+        	int index = body.indexOf(strToFind)+strToFind.length();
+        	String key = body.substring(index, index+64);
+        	keys.put("pskey", key);
+        }
+        if(body.contains("pstoken")){
+        	String strToFind = "name=\"pstoken\" value=\"";
+        	int index = body.indexOf(strToFind)+strToFind.length();
+        	String key = body.substring(index, index+42);
+        	keys.put("pstoken", key);
         }
         return keys;
 	}
 	
 	public void login() throws IOException{
-		URL u = new URL(mcps);
-		HttpsURLConnection conn = (HttpsURLConnection) u.openConnection();
+	
+		Connection.Response loginForm = Jsoup.connect(mcps)
+	            .method(Connection.Method.GET)
+	            .execute();
 		
-		// Get keys
-		Map<String, String> keys = getKeys();
+		Response res = loginForm;
 		
 		// Parameters
-		String user = "user";
-		String pass = "pass";
+		Map<String, String> keys = getKeys(res.body());
+		
+		String user = Credentials.user;
+		String pass = Credentials.pass;
 		String pstoken = keys.get("pstoken");
 		String contextData = keys.get("pskey");
 		String dbpw = CryptoHelper.calcDBPW(contextData, pass);
 		String pw = CryptoHelper.calcPW(contextData, pass);
 		
-		String rawData = 	"pstoken="+pstoken+"&"+
-							"contextData="+contextData+"&"+
-							"dbpw="+dbpw+"&"+
-							"translator_username="+"&"+
-							"translator_password="+"&"+
-							"translator_ldappassword="+"&"+
-							"returnUrl="+"&"+
-							"serviceName=PS Parent Portal"+"&"+
-							"serviceTicket="+"&"+
-							"pcasServerUrl=/"+"&"+
-							"credentialType=User Id and Password Credential"+"&"+
-							"ldappassword="+pass+"&"+
-							"account="+user+"&"+
-							"pw="+pw+"&"+
-							"translatorpw=";
-		String encodedData = URLEncoder.encode( rawData, "UTF-8" );
+		Document document = Jsoup.connect(mcps + "guardian/home.html#/termGrades/assignment?schoolId=757&studentNumber=327059&termId=MP1&sectionId=29850001")
+				.data("cookieexists", "false")
+				.data(	"pstoken", pstoken,
+						"contextData", contextData,
+						"dbpw", dbpw,
+						"translator_username", "",
+						"translator_password", "",
+						"translator_ldappassword", "",
+						"returnUrl", "",
+						"serviceName", "PS Parent Portal",
+						"serviceTicket", "",
+						"pcasServerUrl", "/",
+						"credentialType", "User Id and Password Credential",
+						"ldappassword", pass,
+						"account", user,
+						"pw", pw,
+						"translatorpw", ""
+				)
+				.cookies(loginForm.cookies())
+	            .post();
 		
-		conn.setRequestMethod("POST");
-		conn.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36");
-		conn.setRequestProperty( "Content-Type", "application/x-www-form-urlencoded"); 
-		conn.setRequestProperty("Accept-Language", "en-US,en;q=0.8");
-		conn.setRequestProperty("Content-Length", String.valueOf(encodedData.length()));
-		conn.setRequestProperty( "charset", "utf-8");
-		
-		// Cookies
-		conn.setRequestProperty("Cookie", keys.get("cookies"));
-		
-		System.out.println(conn.getRequestProperties());
-		
-		// Post
-		conn.setDoOutput(true);
-		DataOutputStream wr = new DataOutputStream(conn.getOutputStream());
-		wr.writeBytes(rawData);
-		wr.flush();
-		wr.close();
-		
-		// Debug
-		System.out.println(conn.getResponseCode());
-		System.out.println(rawData);
-		System.out.println();
-		
-		 //read the request
-        BufferedReader reader=new BufferedReader(new InputStreamReader(conn.getInputStream()));
-        String response;
-       
-        while ((response=reader.readLine())!=null) 
-            System.out.println(response);
+		System.out.println(document.body());
 	}
 	
 	public static void main(String[] args) throws IOException, NoSuchAlgorithmException{

@@ -7,18 +7,20 @@ import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.security.NoSuchAlgorithmException;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.net.ssl.HttpsURLConnection;
 
 public class Bill {
+	
 	public static void login() throws IOException, NoSuchAlgorithmException{
-		
 		URL u = new URL("https://bill.mbhs.edu/friends");
 		HttpsURLConnection conn = (HttpsURLConnection) u.openConnection();
 		
 		// Parameters
-		String user = "user";
-		String pass = "pass";
+		String user = Credentials.user;
+		String pass = Credentials.pass;
 		
 		String rawData = 	"username="+user+"&"+
 							"password="+pass;

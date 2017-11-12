@@ -1,0 +1,314 @@
+<body id="parentPageTemp" class="psparent Student"> 
+ <div id="container"> 
+  <!-- start of shell for entire page  --> 
+  <!-- start logo, school, term, logoff, help --> 
+  <div id="header" role="banner"> 
+   <ul id="tools"> 
+    <li id="userName" title=" (Last Sign In:&nbsp;11/11/2017 at 10:47 PM Your previous session )">Welcome, <span> Jason Maa <span> </span></span></li> 
+    <li><a href="http://www.montgomeryschoolsmd.org/mymcps-classroom/ " target="_blank">Help</a></li> 
+    <li><a href="home.html?ac=logoff" id="btnLogout" target="_top" accesskey="l">Sign Out</a></li> 
+   </ul> 
+   <div id="branding-powerschool"> 
+    <a href="/guardian/home.html" tabindex="0"><span class="screen_readers_only">PowerSchool</span></a> 
+   </div> 
+   <div id="cust-content-header"></div> 
+  </div> 
+  <div id="print-school">
+   Montgomery County Public Schools
+   <br>
+   <span>Montgomery Blair HS</span>
+  </div> 
+  <!-- end logo, school, term, logoff, help --> 
+  <div id="usercontext-bar"> 
+   <a href="/guardian/home.html" id="linkBrandingHome" target="_top"><span class="screen_readers_only">PowerSchool</span></a> 
+   <div id="students-list" style="width:75%">
+    &nbsp;
+   </div> 
+   <ul id="tools2"> 
+    <li class="icon-btn-pluginLinkList"> <a id="link-icon-btn-pluginLinkList" href="#" title="Applications" onclick="toggleDrawerPanel('pluginLinkDrawerPanel', 'pluginLinkDrawerModalOverlay', 'expanded'); return false;">&nbsp;<span class="screen_readers_only">Applications</span></a> </li> 
+    <li id="notifIcon"><a href="/guardian/notification/notificationDetailAJAX.action" onclick="return false;" target="_top" id="btnNotifications" class="dialogC"><em class="screen_readers_only">Notifications</em>&nbsp;</a></li> 
+    <li class="icon-btn-print"><a href="javascript:window.print()" title="Print this page"><span class="screen_readers_only">Print this page</span>&nbsp;</a></li> 
+   </ul>  
+   <div id="content"> 
+    <div id="nav-main" role="navigation"> 
+     <h3>Navigation</h3> 
+     <ul role="menu"> 
+      <!--#### TODO - change it back to original ####> 
+		<li id="btn-googleclassroom" role="menuitem"><a href="https://classroom.google.com" target="_blank">Google Classroom</a></li>
+		<li id="btn-classRoom" role="menuitem"><a href="https://mcpsmd.instructure.com/" target="_blank">myMCPS Classroom</a></li>
+                --#################--> 
+      <li id="btn-gradesAttendance" role="menuitem"><a href="/guardian/home.html">Grades and Attendance</a></li> 
+      <li id="btn-gradesHistory" role="menuitem"><a href="/guardian/termgrades.html">Grade History</a></li> 
+      <li id="btn-attendanceHistory" role="menuitem"><a href="/guardian/attendance.html">Attendance History</a></li> 
+      <li id="btn-teacherComments" role="menuitem"><a href="/guardian/teachercomments.html">Teacher Comments</a></li> 
+      <li id="btn-schoolBulletin" role="menuitem"><a href="/guardian/bulletin_popup.html" class="dialogM" title="View School Bulletin">School Bulletin</a></li> 
+      <li id="btn-mySchedule" role="menuitem"><a href="/guardian/myschedule.html">My Schedule</a></li> 
+      <li id="btn-schoolInformation" role="menuitem"><a href="/guardian/schoolinformation.html">School Information</a></li> 
+     </ul> 
+     <div id="cust-leftnav-footer">
+      <script>
+    $j(document).ready(function () {
+        $j('iframe').remove()
+    });
+
+</script> 
+     </div> 
+     <iframe frameborder="0" scrolling="no" allowtransparency="true" src="https://support.powerschool.com/public/ios/powerschool_student.html?districtCode=TLRG" width="100%" height="150"></iframe> 
+    </div> 
+    <div id="content-main" role="main"> 
+     <link href="/guardian/styles/index.css" rel="stylesheet"> 
+     <link href="https://portalimages.mcpsmd.org/psimages/images/css/custom/attendance.css" rel="stylesheet"> 
+     <link href="https://portalimages.mcpsmd.org/psimages/images/css/custom/modal.css" rel="stylesheet"> 
+     <link href="/public/styles/custom_styles.css" rel="stylesheet"> 
+     <!-- HLEE: SPA Html template --> 
+     <h1> 
+      <div ng-if="contextTitle">
+       {{ contextTitle }}: Maa, Jason
+      </div> 
+      <div ng-if="!contextTitle">
+       Maa, Jason
+      </div> 
+      <div class="clear-right"></div> </h1> 
+     <ui-view></ui-view> 
+     <div class="row"> 
+      <div class="pull-right text-right">  
+       <p id="student_detail_header">Maa, Jason &nbsp; 12 &nbsp; 327059 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; BLAIR HS &nbsp; &nbsp; </p> 
+      </div> 
+     </div> 
+     <!-- HLEE : Include app stuffs we need for our SPA --> 
+     <!-- inject:vendor:js --> 
+     <script src="https://portalimages.mcpsmd.org/psimages/scripts/vendor/angular.min.js"></script> 
+     <script src="https://portalimages.mcpsmd.org/psimages/scripts/vendor/angular.i-router.min.js"></script> 
+     <script src="https://portalimages.mcpsmd.org/psimages/scripts/vendor/bootstrap.min.js"></script> 
+     <script src="https://portalimages.mcpsmd.org/psimages/scripts/vendor/underscore-min.js"></script> 
+     <!-- endinject --> 
+     <script type="text/javascript">
+    (function(root) {
+        root.intermediateGrade = 6;
+        root.currentGradeLevel = parseInt('12');
+        root.schoolId = parseInt('757');
+        root.studentNumber = parseInt('327059');
+        root.studentId = parseInt('94265');
+        root.dcid = '';
+        root.guardianId = '94265';
+        root.isElementaryGrade = root.currentGradeLevel < root.intermediateGrade;
+        root.currentYear = 1990 + parseInt('27' /* 26 */ ) + 1; /* currently 2016 does not have data, use +1 for testing */
+        root.currentYearId = parseInt('27');
+        root.currentTermId = '2701';
+        root.testMode = window.location.search.toLowerCase().indexOf('testmode=true') > -1;
+
+
+       var today = new Date();
+       var endDate = new Date('11/22/2017');
+
+       if (root.isElementaryGrade) {
+          // today before end date range, remove the menu
+          if (today <= endDate) {
+            // redirection for elementary to attendance;
+            root.defaultUrl = 'attendance';
+
+          }
+          else {
+            root.defaultUrl = 'termGradesElementary';
+          }
+
+
+        } else {
+            root.defaultUrl = 'termGrades';
+        }
+    })(window.mcpsPsCustomApp || (window.mcpsPsCustomApp = {}));
+</script> 
+     <!-- inject:app:js --> 
+     <script src="https://portalimages.mcpsmd.org/psimages/scripts/custom-app/app.js"></script> 
+     <script src="https://portalimages.mcpsmd.org/psimages/scripts/custom-app/common/AjaxService.js"></script> 
+     <script src="https://portalimages.mcpsmd.org/psimages/scripts/custom-app/common/cacheStorageService.js"></script> 
+     <script src="https://portalimages.mcpsmd.org/psimages/scripts/custom-app/common/pageTitleService.js"></script> 
+     <script src="https://portalimages.mcpsmd.org/psimages/scripts/custom-app/common/percentage.filter.js"></script> 
+     <script src="https://portalimages.mcpsmd.org/psimages/scripts/custom-app/common/stringExtensions.js"></script> 
+     <script src="https://portalimages.mcpsmd.org/psimages/scripts/custom-app/common/studentData.dmn.js"></script> 
+     <script src="https://portalimages.mcpsmd.org/psimages/scripts/custom-app/common/terms.js"></script> 
+     <!-- endinject --> 
+     <script src="/scripts/custom-app/emergencyContact/emergencyContact.ctrl.js"></script> 
+     <script src="/scripts/custom-app/emergencyContact/emergencyContact.dmn.js"></script> 
+     <script src="/scripts/custom-app/emergencyContact/emergencyContactCheck.js"></script> 
+     <script src="/scripts/custom-app/stateConfig.js"></script> 
+     <script src="/scripts/custom-app/gadeElementary/elementaryGrade.ctrl.js"></script> 
+     <script src="/scripts/custom-app/gradeElementary/elementaryGrade.dmn.js"></script> 
+     <script src="/scripts/custom-app/gradeSecondary/grades.dmn.js"></script> 
+     <script src="/scripts/custom-app/gradeSecondary/gradeSecondary.ctrl.js"></script> 
+     <script src="/scripts/custom-app/gradeSecondaryDetail/gradeAssignmentDetail.ctrl.js"></script> 
+     <script src="/scripts/custom-app/gradeSecondaryDetail/gradeDetail.dmn.js"></script> 
+     <script src="/scripts/custom-app/attendance/attendance.ctrl.js"></script> 
+     <script src="/scripts/custom-app/attendance/attendance.dmn.js"></script> 
+     <!-- end of content area --> 
+     <!--hlee: guardian footer has "content.footer" which rafael extends it --> 
+     <div id="cust-content-footer">
+      <script>
+    $j(document).ready(function () {
+        $j( 'li#btn-gradesAttendance' ).replaceWith('<li id="btn-gradesAttendance" role="menuitem"><a href="/guardian/home.html">Grades</a></li');
+    });
+</script> 
+      <script>
+    // HLEE: Hide grade menu link
+    (function($) {
+        var intermediateGrade = 6;
+        var currentGradeLevel = parseInt('12');
+        var isElementaryGrade = currentGradeLevel < intermediateGrade;
+
+
+        if (isElementaryGrade) {
+            // hide grade menu until Nov 20 2017
+            var today = new Date();
+            var endDate = new Date('11/20/2017');
+
+            // today before end date range, remove the menu
+            if (today <= endDate) {
+                var gradeMenuLink = $('li#btn-gradesAttendance');
+                gradeMenuLink.remove();
+            }
+        }
+    })($j);
+</script> 
+      <script>
+    // RG: Display Curriculum Link
+    (function($) {
+        var intermediateGrade = 6;
+        var currentGradeLevel = parseInt('12');
+        var isElementaryGrade = currentGradeLevel < intermediateGrade;
+
+        if (isElementaryGrade) {
+            // Display Elementary Curriculum Link
+            $j( "#btn-schoolInformation" ).after('<li id="btn-mcpsCurriculum" role="menuitem"><a href="https://sites.google.com/a/mcpsmd.net/mcps-elementary-curriculum-parent-resources/home" target="_blank">Curriculum Resources</a></li>');
+        }
+        else {
+            // Display Secondary Curriculum Link
+            $j( "#btn-schoolInformation" ).after('<li id="btn-mcpsCurriculum" role="menuitem"><a href="https://sites.google.com/mcpsmd.net/secondaryparentresources/home" target="_blank">Curriculum Resources</a></li>');
+        }
+    })($j);
+</script>
+      <script>
+    $j(document).ready(function() {
+        $j('li#btn-mySchedule').replaceWith('<li id="btn-mcpsGoogle" role="menuitem"><a href="https://classroom.google.com" target="_blank">Google Classroom (Student)</a></li>');
+        $j('li#btn-emailNotification').remove();
+        $j('li#btn-teacherComments').remove();
+        $j('li#btn-schoolBulletin').replaceWith('<li id="btn-mySchedule" role="menuitem"><a href="/guardian/myschedule.html">My Schedule</a></li>');
+    });
+    $j(document).ready(function() {
+        var info = $j('td:contains(myMCPS)').html();
+        $j('#nav-main ul li:eq(3)').after(
+            $j('<li id="btn-mcpsClassroom" role="menuitem">').append(info));
+    });
+</script>
+      <script>
+    $j(document).ready(function () {
+        $j( 'li#btn-attendanceHistory' ).replaceWith('<li id="btn-attendanceHistory" role="menuitem"><a href="/guardian/home.html#/attendance">Attendance</a></li>');
+    });
+</script> 
+      <script>
+$j(document).ready(function () {
+  $j('#pluginLinkDrawerTable > tbody').append('<tr>\
+    <td><a href="https://connection.naviance.com/fc/signin.php?hsid=mbhs" target="_blank">College and Career Readiness</a></td>\
+    <td>Access to the College and Career Readiness Planner for students in Grades 6-12, powered by Naviance</td>\
+</tr>\
+<tr>\
+    <td><a href="https://classroom.google.com" target="_blank">Google Classroom</a></td>\
+    <td>Access to Google Classroom.<br />Requires student&quot;s account information</td>\
+</tr>\
+<tr>\
+    <td><a href="https://destiny.mcpsmd.org/common/welcome.jsp?site=208" target="_blank">Library Management System</a></td>\
+    <td>Access to the online library card catalog system, powered by Destiny</td>\
+</tr>\
+<tr>\
+    <td><a href="http://www.montgomeryschoolsmd.org/departments/foodserv/menus/cafemenus.aspx" target="_blank">School Lunch Menus</a></td>\
+    <td>Access to elementary and secondary school lunch menus, nutritional information, and more...</td>\
+</tr>');
+});
+</script>
+      <script>
+
+jQuery(document).ready(function(e){
+
+jQuery('#input-username').parent().hide();
+jQuery("[for='input_guardian_email']").text('Email (will be username)');
+jQuery('#password-reveal').parent().css('background-color', 'rgb(235, 235, 235)');
+
+function isValidEmail(sEmail) {
+	var filter = /^[\w\-\.\+]+\@[a-zA-Z0-9\.\-]+\.[a-zA-z0-9]{2,4}$/;
+	if (filter.test(sEmail)) {
+		return true;
+	}
+	else {
+		return false;
+	}
+}
+
+jQuery('#input_guardian_email').on("blur",function() {
+    if (isValidEmail(jQuery("#input_guardian_email").val())) {
+    // copy email to username
+   	jQuery("#input-username").val(jQuery("#input_guardian_email").val());
+    }
+});
+
+});
+</script>
+     </div> 
+    </div> 
+    <div id="print-disclaimer">
+      DISCLAIMER: This system is provided as a convenience. Grades and other information provided by this system are not official records and may or may not be accurate. Neither this institution nor PowerSchool Group LLC or its affiliates accepts any responsibility for information provided by this system and/or for any damages resulting from information provided by this system. For official grades and student records contact your school. 
+    </div> 
+    <!--end content--> 
+    <!-- end of shell for entire page --> 
+    <!-- Start of copyright table --> 
+   </div> 
+  </div> 
+  <!--end container--> 
+  <div id="master-drawer-content-div"> 
+   <style type="text/css">
+.rightSideDrawerPanel .content, .rightSideDrawerPanel.buttonless .content, .rightSideDrawerPanel .button-row, .rightSideDrawerPanel h1 {
+    width: 500px;
+}
+</style> 
+   <div id="pluginLinkDrawerPanel" class="rightSideDrawerPanel collapsed buttonless"> 
+    <div class="content"> 
+     <h1>Applications <span><button id="pluginLinkDrawerPanelBtnClose" onclick="toggleDrawerPanel('pluginLinkDrawerPanel', 'pluginLinkDrawerModalOverlay', 'collapsed'); return false;">Close</button></span></h1> 
+     <div class="box-round"> 
+      <table id="pluginLinkDrawerTable" class="linkDescList"> 
+       <colgroup>
+        <col>
+        <col>
+       </colgroup> 
+       <thead> 
+        <tr> 
+         <th>Applications</th> 
+         <th>Description</th> 
+        </tr> 
+       </thead> 
+       <tbody> 
+        <tr> 
+         <td><a href="http://montgomeryschoolsmd.org" title="Link to the MCPS Home Page" id="link-ec70ba39b7685d542174beb1244c67ca" target="_blank">MCPS Home</a></td> 
+         <td>Link to the MCPS Home Page</td> 
+        </tr> 
+        <tr> 
+         <td><a href="https://mcpsmd.instructure.com/login/saml" title="Login to myMCPS Classroom" id="link-702b01f3fb2456d6f9a574b8798b2ae4" target="_blank">myMCPS Classroom</a></td> 
+         <td>Login to myMCPS Classroom</td> 
+        </tr> 
+        <tr> 
+         <td><a href="/guardian/openid/oidredirectaction.action?pluginName=PowerSchool%20Special%20Education&amp;linkId=43" title="Go to the Section 504 home page." id="link-211a4676502538ef4a922bd282bc9a35" target="_blank">Section 504</a></td> 
+         <td>Go to the Section 504 home page.</td> 
+        </tr> 
+       </tbody> 
+      </table> 
+     </div> 
+     <div class="doorProp"></div> 
+    </div> 
+   </div> 
+   <div id="pluginLinkDrawerModalOverlay" class="drawerModalOverlay"></div> 
+  </div> 
+  <div id="footer"> 
+   <div id="legal"> 
+    <p>Copyright © 2005-2016 PowerSchool Group LLC and/or its affiliate(s). All rights reserved.<br>All trademarks are either owned or licensed by PowerSchool Group LLC and/or its affiliates.</p> 
+   </div> 
+  </div> 
+  <!--<iframe style="height:0px;width:0px;visibility:hidden" src="javascript:false" id="disablecache"></iframe>-->   
+ </div>
+</body>
