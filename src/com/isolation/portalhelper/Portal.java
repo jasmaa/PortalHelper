@@ -1,24 +1,13 @@
 package com.isolation.portalhelper;
 
-import java.io.BufferedReader;
-import java.io.DataOutputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.net.URLConnection;
-import java.net.URLEncoder;
 import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.net.ssl.HttpsURLConnection;
-
 import org.jsoup.Connection;
 import org.jsoup.Connection.Response;
 import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
 
 /**
  * Connects to MCPS Portal
@@ -26,8 +15,15 @@ import org.jsoup.nodes.Document;
 public class Portal {
 	
 	static String mcps = "https://portal.mcpsmd.org/";
-	static String test = "https://postman-echo.com/post";
+	Map<String, String> allCookies = new HashMap<String, String>();
 	
+	/**
+	 * Gets pskey and pstoken from html
+	 * 
+	 * @param body
+	 * @return
+	 * @throws IOException
+	 */
 	public Map getKeys(String body) throws IOException{
 		
 		Map<String, String> keys = new HashMap<String, String>();
@@ -48,6 +44,11 @@ public class Portal {
         return keys;
 	}
 	
+	/**
+	 * Logs user in
+	 * 
+	 * @throws IOException
+	 */
 	public void login() throws IOException{
 	
 		Connection.Response loginForm = Jsoup.connect(mcps)
@@ -63,6 +64,8 @@ public class Portal {
 		String contextData = keys.get("pskey");
 		String dbpw = CryptoHelper.calcDBPW(contextData, pass);
 		String pw = CryptoHelper.calcPW(contextData, pass);
+		
+		allCookies.putAll(loginForm.cookies());
 		
 		Connection.Response loginToHome = Jsoup.connect(mcps + "guardian/home.html")
 				.data("cookieexists", "false")
@@ -82,15 +85,35 @@ public class Portal {
 						"pw", pw,
 						"translatorpw", ""
 				)
-				.cookies(loginForm.cookies())
+				.cookies(allCookies)
 				.method(Connection.Method.POST)
 	            .execute();
 		
-		System.out.println(loginToHome.body());
+		allCookies.putAll(loginToHome.cookies());
+		allCookies.put("uiStateCont", "null");
+		allCookies.put("uiStateNav", "null");
+		System.out.println(allCookies);
+	}
+	
+	/**
+	 * Navigates to sub dir
+	 * 
+	 * @param url
+	 * @throws IOException
+	 */
+	public void nav(String url) throws IOException{
+		Response test = Jsoup.connect(mcps + url)
+				.data("cookieexists", "false")
+				.cookies(allCookies)
+				.method(Connection.Method.GET)
+				.execute();
+		
+		System.out.println(test.body());
 	}
 	
 	public static void main(String[] args) throws IOException, NoSuchAlgorithmException{
 		Portal p = new Portal();
 		p.login();
+		p.nav("guardian/termgrades.html?termid=2600&schoolid=757");
 	}
 }

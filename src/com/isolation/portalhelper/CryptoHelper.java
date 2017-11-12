@@ -15,7 +15,12 @@ import javax.crypto.spec.SecretKeySpec;
  */
 public class CryptoHelper {
 	
-	// Base64-MD5
+	/**
+	 * Hashes input with MD5 and encodes bytes in Base64
+	 * 
+	 * @param inputString
+	 * @return
+	 */
 	private static String b64MD5(final String inputString) {
 		try{
 		    MessageDigest md = MessageDigest.getInstance("MD5");
@@ -32,7 +37,13 @@ public class CryptoHelper {
 		return null;
 	}
 	
-	// HMAC-MD5
+	/**
+	 * Encrypts data with key using HMAC-MD5
+	 * 
+	 * @param key
+	 * @param data
+	 * @return
+	 */
 	private static String hmacMD5(String key, String data) {
 		try{
 			SecretKeySpec signingKey = new SecretKeySpec(key.getBytes(), "HmacMD5");
