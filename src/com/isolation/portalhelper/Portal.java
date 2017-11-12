@@ -102,18 +102,22 @@ public class Portal {
 	 * @throws IOException
 	 */
 	public void nav(String url) throws IOException{
-		Response test = Jsoup.connect(mcps + url)
+		Response nav = Jsoup.connect(mcps + url)
 				.data("cookieexists", "false")
 				.cookies(allCookies)
 				.method(Connection.Method.GET)
 				.execute();
 		
-		System.out.println(test.body());
+		allCookies.putAll(nav.cookies());
+		
+		System.out.println(nav.body());
 	}
 	
 	public static void main(String[] args) throws IOException, NoSuchAlgorithmException{
 		Portal p = new Portal();
 		p.login();
-		p.nav("guardian/termgrades.html?termid=2600&schoolid=757");
+		p.nav("guardian/home.html#termGrades");
+		// Powerschool why is it so hard to get grades??? :((((
+		// https://portal.mcpsmd.org/guardian/prefs/termsData.json?schoolid=757
 	}
 }
