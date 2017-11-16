@@ -1,6 +1,7 @@
 package com.isolation.portalhelper;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -20,13 +21,14 @@ import com.google.gson.JsonObject;
  * Connects to MCPS Portal
  * Represents a student
  */
-public class Portal {
+public class Portal implements Serializable{
 	
 	private static String mcps = "https://portal.mcpsmd.org/";
 	private Map<String, String> allCookies = new HashMap<String, String>();
 	
 	private String schoolId;
 	private List<SchoolClass> classes = new ArrayList<SchoolClass>();
+	private String term;
 	
 	/**
 	 * Gets pskey and pstoken from html
@@ -104,6 +106,9 @@ public class Portal {
 		
 		// School id
 		schoolId = allCookies.get("currentSchool");
+		
+		//Term
+		getTerm();
 	}
 	
 	/**
@@ -120,8 +125,6 @@ public class Portal {
 				.execute();
 		
 		allCookies.putAll(nav.cookies());
-		
-		System.out.println(nav.body());
 	}
 	
 	/**
@@ -142,21 +145,47 @@ public class Portal {
 		
 		for(JsonElement e : json){
 			
-			JsonObject schoolClass = e.getAsJsonObject();
-			
-			if(!"{}".equals(e.toString())){
-				classes.add(new SchoolClass(
-						schoolClass.get("courseName").getAsString(),
-						schoolClass.get("teacher").getAsString(),
-						schoolClass.get("sectionid").getAsString()
-					));
+			if("{}".equals(e.toString())){
+				continue;
 			}
+			
+			JsonObject schoolClass = e.getAsJsonObject();
+			String classTerm = schoolClass.get("termid").getAsString();
+			
+			if(!term.equals(classTerm)){
+				continue;
+			}
+			
+			
+			classes.add(new SchoolClass(
+					schoolClass.get("courseName").getAsString(),
+					schoolClass.get("teacher").getAsString(),
+					schoolClass.get("sectionid").getAsString()
+				));
 		}
 		
 		// Add assignments for each school class
 		for(SchoolClass c : classes){
 			addAssignments(c);
 		}
+	}
+	
+	/**
+	 * Gets current term
+	 * @throws IOException 
+	 * 
+	 */
+	public void getTerm() throws IOException{
+		Response nav = Jsoup.connect(mcps + "guardian/prefs/termsData.json?schoolid=" + schoolId)
+				.data("cookieexists", "false")
+				.cookies(allCookies)
+				.method(Connection.Method.GET)
+				.execute();
+		
+		Gson gson = new Gson();
+		JsonArray json = gson.fromJson(nav.body(), JsonArray.class);
+		
+		term = json.get(0).getAsJsonObject().get("code").getAsString();
 	}
 	
 	/**
@@ -185,6 +214,9 @@ public class Portal {
 				if("X".equals(assign.get("Points").getAsString())){
 					continue;
 				}
+				else if("".equals(assign.get("Points").getAsString())){
+					continue;
+				}
 				
 				c.assigns.add(new Assignment(
 						assign.get("Description").toString(),
@@ -198,6 +230,7 @@ public class Portal {
 	public static void main(String[] args) throws IOException, NoSuchAlgorithmException{
 		Portal p = new Portal();
 		p.login(Credentials.user, Credentials.pass);
+		p.getTerm();
 		p.getGrades();
 		
 		for(SchoolClass c : p.classes){

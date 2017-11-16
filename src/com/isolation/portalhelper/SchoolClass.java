@@ -1,5 +1,6 @@
 package com.isolation.portalhelper;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -8,7 +9,7 @@ import java.util.List;
  *
  */
 
-public class SchoolClass {
+public class SchoolClass implements Serializable{
 	
 	private String title;
 	private String teacher;

@@ -1,11 +1,13 @@
 package com.isolation.portalhelper;
 
+import java.io.Serializable;
+
 /**
  * School assignment
  *
  */
 
-public class Assignment {
+public class Assignment implements Serializable{
 	private String title;
 	private float points;
 	private float possible;
@@ -28,8 +30,16 @@ public class Assignment {
 	public float getPoints() {
 		return points;
 	}
+	public void setPoints(float p){
+		points = p;
+		percent = points / possible;
+	}
 	public float getPossible() {
 		return possible;
+	}
+	public void setPossible(float p){
+		possible = p;
+		percent = points / possible;
 	}
 	public float getPercent() {
 		return percent;
