@@ -36,7 +36,7 @@ public class SchoolClass implements Serializable{
 			totalPoints += a.getPoints();
 			totalPossible += a.getPossible();
 		}
-		totalPercent = totalPoints / totalPossible;
+		totalPercent = totalPossible > 0 ? totalPoints / totalPossible : 1;
 	}
 	
 	public String toString(){
