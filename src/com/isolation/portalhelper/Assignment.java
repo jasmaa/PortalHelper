@@ -39,7 +39,7 @@ public class Assignment implements Serializable{
 	}
 	public void setPossible(float p){
 		possible = p;
-		percent = points / possible;
+		percent = possible > 0 ? points / possible : 1;
 	}
 	public float getPercent() {
 		return percent;
