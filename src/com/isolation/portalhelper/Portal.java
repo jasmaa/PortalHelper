@@ -227,6 +227,15 @@ public class Portal implements Serializable{
 		}
 	}
 	
+	/**
+	 * Gets the classes list
+	 * 
+	 * @return classes
+	 */
+	public List<SchoolClass> getClasses(){
+		return this.classes;
+	}
+	
 	public static void main(String[] args) throws IOException, NoSuchAlgorithmException{
 		Portal p = new Portal();
 		p.login(Credentials.user, Credentials.pass);
